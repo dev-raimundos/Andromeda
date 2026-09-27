@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ homologacao ]
+    branches: [ staging ]
 
 jobs:
   test:
@@ -53,7 +53,7 @@ jobs:
         run: ./mvnw -B verify sonar:sonar
 
   promote:
-    name: Promover homologação para main
+    name: Promote staging to main
     needs: sonar
     runs-on: ubuntu-latest
     permissions:
@@ -65,9 +65,9 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Merge homologacao -> main
+      - name: Merge staging -> main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git merge --no-ff origin/homologacao -m "chore: promove homologação para main [skip ci]"
+          git merge --no-ff origin/staging -m "chore: promote staging to main [skip ci]"
           git push origin main
