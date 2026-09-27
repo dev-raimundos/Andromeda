@@ -2,6 +2,11 @@ spring:
   application:
     name: api
 
+  # Carrega o .env da raiz do projeto ao rodar pela IDE/Maven.
+  # Variáveis de ambiente reais (ex.: Docker Compose) têm precedência.
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/mydatabase}
     username: ${DATABASE_USERNAME:myuser}
