@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ staging ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -68,22 +68,14 @@ jobs:
           done
           [ $n -lt 3 ]
 
-  promote:
-    name: Promote staging to main
+  deploy:
+    name: Deploy via Dokploy
     needs: sonar
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment: production
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Merge staging -> main
+      - name: Disparar webhook de deploy do Dokploy
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git merge --no-ff origin/staging -m "chore: promote staging to main [skip ci]"
-          git push origin main
+          curl -sSf -X POST "${{ secrets.DOKPLOY_WEBHOOK_URL }}" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"refs/heads/main"}'
