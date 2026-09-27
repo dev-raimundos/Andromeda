@@ -16,6 +16,7 @@ services:
     ports:
       - '${APP_PORT:-8080}:8080'
     environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
       - DATABASE_URL=${DATABASE_URL:?defina DATABASE_URL no .env}
       - DATABASE_USERNAME=${DATABASE_USERNAME:?defina DATABASE_USERNAME no .env}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD:?defina DATABASE_PASSWORD no .env}
@@ -29,7 +30,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/v3/api-docs || exit 1"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
