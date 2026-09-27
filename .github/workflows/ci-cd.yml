@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ homologacao ]
 
 jobs:
   test:
@@ -52,12 +52,22 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./mvnw -B verify sonar:sonar
 
-  deploy:
-    name: Deploy via Dokploy
+  promote:
+    name: Promover homologação para main
     needs: sonar
     runs-on: ubuntu-latest
-    environment: production
+    permissions:
+      contents: write
     steps:
-      - name: Disparar webhook de deploy do Dokploy
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Merge homologacao -> main
         run: |
-          curl -sSf -X POST "${{ secrets.DOKPLOY_WEBHOOK_URL }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git merge --no-ff origin/homologacao -m "chore: promove homologação para main [skip ci]"
+          git push origin main
