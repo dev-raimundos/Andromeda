@@ -108,6 +108,10 @@ public class AuthService {
                 )
         );
 
-        return TokenResponse.bearer(accessToken, refreshTokenValue, tokenService.getAccessTokenExpiresIn());
+        return TokenResponse.bearer(
+                accessToken,
+                refreshTokenValue,
+                tokenService.getAccessTokenExpiresIn()
+        );
     }
 }
