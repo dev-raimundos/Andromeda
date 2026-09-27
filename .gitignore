@@ -34,3 +34,5 @@ build/
 
 # certificados corporativos locais
 certs/*.crt
+
+.env
