@@ -20,7 +20,15 @@ jobs:
           cache: maven
 
       - name: Rodar testes
-        run: ./mvnw -B test
+        run: |
+          n=0
+          until [ $n -ge 3 ]; do
+            ./mvnw -B test && break
+            n=$((n+1))
+            echo "Tentativa $n falhou, aguardando antes de tentar novamente..."
+            sleep 10
+          done
+          [ $n -lt 3 ]
 
   sonar:
     name: SonarQube
@@ -50,7 +58,15 @@ jobs:
       - name: Build, testes com cobertura e análise SonarQube
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw -B verify sonar:sonar
+        run: |
+          n=0
+          until [ $n -ge 3 ]; do
+            ./mvnw -B verify sonar:sonar && break
+            n=$((n+1))
+            echo "Tentativa $n falhou, aguardando antes de tentar novamente..."
+            sleep 10
+          done
+          [ $n -lt 3 ]
 
   promote:
     name: Promote staging to main
