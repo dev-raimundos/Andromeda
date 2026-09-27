@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,6 +79,15 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 "Corpo da requisição ausente ou malformado."
+        );
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ProblemDetail handleNoResourceFound(NoResourceFoundException ex) {
+        log.warn("[EXCEPTION] Rota não encontrada: {}", ex.getMessage());
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                "Recurso não encontrado."
         );
     }
 
