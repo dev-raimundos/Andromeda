@@ -2,6 +2,10 @@ spring:
   application:
     name: api
 
+  threads:
+    virtual:
+      enabled: true
+
   # Carrega o .env da raiz do projeto ao rodar pela IDE/Maven.
   # Variáveis de ambiente reais (ex.: Docker Compose) têm precedência.
   config:
