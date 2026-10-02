@@ -45,7 +45,11 @@ public class RefreshToken extends BaseEntity<Long> {
     }
 
     public static RefreshToken issue(String token, Long userId, @NonNull Instant now, Duration validFor) {
-        return new RefreshToken(token, userId, now.plus(validFor));
+        return new RefreshToken(
+                token,
+                userId,
+                now.plus(validFor)
+        );
     }
 
     public boolean isExpired(Instant now) {
