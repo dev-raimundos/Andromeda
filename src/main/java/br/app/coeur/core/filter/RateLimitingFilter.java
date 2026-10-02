@@ -1,4 +1,4 @@
-package br.app.coeur.core.config.filter;
+package br.app.coeur.core.filter;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -33,13 +33,20 @@ public class RateLimitingFilter implements Filter {
         if (request instanceof HttpServletRequest httpRequest && response instanceof HttpServletResponse httpResponse) {
             String ip = getClientIp(httpRequest);
 
-            TokenBucket bucket = ipBuckets.computeIfAbsent(ip, k -> new TokenBucket(MAX_TOKENS, REFILL_PERIOD_SECONDS));
+            TokenBucket bucket = ipBuckets.computeIfAbsent(
+                    ip,
+                    k -> new TokenBucket(
+                            MAX_TOKENS,
+                            REFILL_PERIOD_SECONDS
+                    )
+            );
 
             if (!bucket.tryConsume()) {
                 httpResponse.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
                 httpResponse.setContentType("application/json");
                 httpResponse.setCharacterEncoding("UTF-8");
-                httpResponse.getWriter().write("{\"error\": \"Excesso de requisições. Rate limit excedido. Tente novamente em instantes.\"}");
+                httpResponse.getWriter().write("{\"error\": \"Excesso de requisições. " +
+                        "Rate limit excedido. Tente novamente em instantes.\"}");
                 return;
             }
         }
